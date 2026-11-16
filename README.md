@@ -42,6 +42,19 @@ Requirements: **Chrome 120 or later** and **Node.js 22 or later** with npm.
 The source archive must be built before installation. Keep the unpacked path
 stable: moving it can change the extension's identity and separate its local records.
 
+## Build a Chrome Web Store ZIP
+
+Open [Build Chrome Web Store ZIP](https://github.com/multidimension-al/orderstash/actions/workflows/package.yml),
+click **Run workflow**, select the branch and confirm. When the run succeeds,
+download `OrderStash-0.1.0.zip` from its **Artifacts** section or summary link.
+The downloaded file can be uploaded directly to the Chrome Web Store Developer
+Dashboard. Downloads require signing in to GitHub and are retained for 30 days.
+
+The packaging workflow runs only when manually requested. It builds, typechecks,
+runs unit tests, audits the public files and verifies the ZIP contents. Store
+submission is a separate step. For local packaging, run `npm run build` followed
+by `npm run package`; the ZIP is written to `artifacts/`.
+
 ## Start exporting
 
 1. Open **Your Orders** on Amazon, then click OrderStash's toolbar icon.

@@ -35,6 +35,24 @@ Initialize a Git repository if you also want to run the publication audit.
 | `npm run test:browser` | Exercise real Chrome APIs against local HTTPS fixtures. |
 | `npm run package` | Audit the build and create an extension ZIP under `artifacts/`. |
 
+## Manual GitHub packaging
+
+In the repository's **Actions** tab, choose
+[Build Chrome Web Store ZIP](https://github.com/multidimension-al/orderstash/actions/workflows/package.yml)
+and click **Run workflow**. Choose the source branch and confirm. This workflow
+uses only `workflow_dispatch`, so pushes and pull requests do not create packages.
+
+The job installs dependencies, builds and typechecks, runs unit tests, invokes
+the publication audit through the package command, and compares every ZIP entry
+with the audited build. The ZIP must have `manifest.json`, `LICENSE` and `NOTICE`
+at its root. Real-Chrome fixture checks remain separate.
+
+After a successful run, download `OrderStash-0.1.0.zip` from **Artifacts** or the
+run summary link. The original ZIP is uploaded as a single file and is ready for
+the Chrome Web Store Developer Dashboard. Sign in to GitHub to download it.
+Artifacts expire after 30 days; rerun the workflow for a fresh build. The workflow
+does not change the version, create a GitHub Release or submit to the Web Store.
+
 ## Browser tests
 
 Synthetic fixtures run on local HTTPS with isolated Chrome profiles. The test

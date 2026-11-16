@@ -1,0 +1,74 @@
+name: Build Chrome Web Store ZIP
+run-name: Chrome Web Store ZIP (${{ github.ref_name }})
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build and typecheck
+        run: npm run build
+      - name: Run unit tests
+        run: npm test -- --no-coverage
+      - name: Audit and package extension
+        run: npm run package
+      - name: Verify packaged contents
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          archives = list(Path('artifacts').glob('OrderStash-*.zip'))
+          assert len(archives) == 1, 'Expected exactly one extension ZIP'
+          expected = {p.relative_to('build').as_posix(): p.read_bytes()
+                      for p in Path('build').rglob('*') if p.is_file()}
+          with ZipFile(archives[0]) as archive:
+              entries = [entry for entry in archive.infolist() if not entry.is_dir()]
+              assert len(entries) == len(expected), 'Unexpected or duplicate ZIP entries'
+              assert {entry.filename for entry in entries} == set(expected), 'ZIP differs from audited build'
+              for entry in entries:
+                  assert archive.read(entry) == expected[entry.filename], 'Packaged file differs: ' + entry.filename
+              manifest = json.loads(archive.read('manifest.json'))
+              assert manifest['version'] == json.loads(Path('package.json').read_text())['version']
+              assert 'LICENSE' in expected and 'NOTICE' in expected
+          print('Verified ' + archives[0].name + ': manifest at root, audited files and attribution intact.')
+          PY
+      - name: Upload Chrome Web Store ZIP
+        id: upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          path: artifacts/OrderStash-*.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+      - name: Add download link
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### Chrome Web Store ZIP'
+            echo
+            echo "[Download extension ZIP]($ARTIFACT_URL)"
+            echo
+            echo 'Upload this ZIP directly to the Chrome Web Store Developer Dashboard.'
+            echo 'This workflow creates a downloadable build; store submission is a separate step.'
+            echo 'The artifact is retained for 30 days. Run this workflow again to build another copy.'
+          } >> "$GITHUB_STEP_SUMMARY"
