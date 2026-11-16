@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>OrderStash · Amazon invoice export</title>
+    <link rel="stylesheet" href="panel.css" />
+    <script src="panel.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <img class="brand-logo" src="orderstash-logo-light.png" alt="OrderStash" width="205" height="56" />
+        <span>Invoice PDFs & order exports</span>
+      </div>
+      <button
+        id="detach"
+        title="Detach into a small window"
+        aria-label="Detach into a window"
+      >
+        ↗</button
+      ><button
+        id="native-panel"
+        title="Use Chrome’s side panel"
+        aria-label="Use Chrome side panel"
+      >
+        ▥</button
+      ><button
+        id="close-panel"
+        title="Close sidebar"
+        aria-label="Close sidebar"
+        hidden
+      >
+        ×
+      </button>
+    </header>
+    <nav aria-label="Extension sections">
+      <button data-page="export" aria-current="page">Export</button
+      ><button data-page="orders">Orders</button
+      ><button data-page="history">History</button
+      ><button data-page="settings">Settings</button
+      ><button data-page="help">Help</button>
+    </nav>
+    <main>
+      <div id="notice" class="notice" role="status" hidden></div>
+      <section id="page-export">
+        <div id="disconnected" hidden>
+          <h1>Open your Amazon orders.</h1>
+          <p>
+            OrderStash reads the Amazon page you have open. Go to Your Orders,
+            then choose the invoices you want to save.
+          </p>
+          <button id="open-amazon" class="primary">Open Amazon Orders</button
+          ><button id="refresh-context" class="link">
+            Check the open page again
+          </button>
+        </div>
+        <div id="connected" hidden>
+          <div class="amazon-context">
+            <span class="connected-dot"></span>
+            <div>
+              <strong id="site">Amazon</strong><span id="page-context"></span>
+            </div>
+            <button
+              id="refresh"
+              class="link"
+              title="Read the open Amazon page again"
+            >
+              Refresh
+            </button>
+          </div>
+          <div class="library-summary">
+            <strong id="library-count">Reading your local library…</strong>
+            <span>Unique orders on this Amazon site, across all years.</span>
+            <p id="capture-status" class="hint"></p>
+          </div>
+          <label for="scope">Which orders?</label
+          ><select id="scope"></select>
+          <p id="scope-info" class="hint"></p>
+          <button id="save-pdfs" class="primary pdf-action">
+            <span>Save invoice PDFs</span
+            ><small>Free · Original Amazon invoices</small>
+          </button>
+          <p class="action-help">
+            Reads order summaries, then opens each requested invoice to save it.
+            Previously saved PDFs can be skipped.
+          </p>
+          <div class="csv-action">
+            <select id="csv-view" aria-label="CSV contents">
+              <option value="orders">Orders CSV</option>
+              <option value="items">Items CSV</option>
+              <option value="shipments">Shipments CSV</option>
+              <option value="payments">Payments CSV</option></select
+            ><button id="save-csv" class="secondary">Export CSV</button>
+          </div>
+          <p class="action-help">
+            Uses information on the history pages. Missing extra fields stay
+            blank.
+          </p>
+          <label class="check"
+            ><input type="checkbox" id="only-new" checked /><span
+              >Export only records not saved before<small
+                >Tracked separately for PDFs and each CSV format.</small
+              ></span
+            ></label
+          >
+          <details class="options">
+            <summary>Collection options</summary>
+            <label class="check"
+              ><input id="extra-details" type="checkbox" /><span
+                >Read extra order details<small
+                  >Tax, refunds, payment labels and extra shipment fields. Adds
+                  a visit for each uncached order.</small
+                ></span
+              ></label
+            ><label class="check"
+              ><input id="categories" type="checkbox" /><span
+                >Look up product categories<small
+                  >Extra product-page visits. Requires extra order
+                  details.</small
+                ></span
+              ></label
+            ><label class="check"
+              ><input id="tracking" type="checkbox" /><span
+                >Look up tracking IDs<small
+                  >Extra tracking-page visits. Requires extra order
+                  details.</small
+                ></span
+              ></label
+            ><button id="collect-only" class="secondary">
+              Load summaries without exporting</button
+            ><button id="collect-payments" class="link">
+              Read payment activity separately
+            </button>
+          </details>
+          <div id="saved" class="saved-count"></div>
+        </div>
+      </section>
+      <section id="page-orders" hidden>
+        <h1>Your saved orders</h1>
+        <p id="orders-site" class="hint"></p>
+        <label for="order-search">Find an order</label>
+        <input id="order-search" type="search" placeholder="Order number, item or date" />
+        <div class="order-filters">
+          <div><label for="order-period">Show orders from</label>
+            <select id="order-period"><option value="selection">Current export selection</option><option value="all">All saved years</option></select></div>
+          <div><label for="order-status">Export status</label>
+            <select id="order-status"><option value="all">All orders</option><option value="pdf-pending">PDF not exported</option><option value="pdf-saved">PDF exported</option><option value="csv-pending">Orders CSV not exported</option></select></div>
+        </div>
+        <p id="order-count" class="hint" role="status"></p>
+        <div id="orders-list"></div>
+        <div class="order-paging" id="order-paging" hidden>
+          <button id="orders-previous">Previous</button><span id="orders-page"></span><button id="orders-next">Next</button>
+        </div>
+        <p class="hint">Export status records completed OrderStash downloads. Files moved or deleted afterward still count as exported.</p>
+        <button class="secondary" data-page="export">Back to export</button>
+      </section>
+      <section id="page-history" hidden>
+        <h1>Recent exports</h1>
+        <p>Completed downloads stay skipped even after you close the panel.</p>
+        <div id="history"></div>
+      </section>
+      <section id="page-settings" hidden>
+        <h1>Your preferences</h1>
+        <form id="preferences">
+          <label class="check"
+            ><input id="pdf-branding" type="checkbox" checked /><span
+              >Add “Exported with OrderStash” to PDFs<small
+                >Includes the order number, site and export time.</small
+              ></span
+            ></label
+          ><label for="paper">PDF paper size</label
+          ><select id="paper">
+            <option value="letter">US Letter</option>
+            <option value="a4">A4</option></select
+          ><label for="pace">Minimum seconds between automated visits</label
+          ><input
+            id="pace"
+            type="number"
+            min="5"
+            max="120"
+            value="6"
+            required
+          />
+          <p class="hint">
+            Each delay varies randomly above this minimum. One page at a time.
+          </p>
+          <label for="limit">Maximum visits between breaks</label
+          ><input
+            id="limit"
+            type="number"
+            min="10"
+            max="150"
+            value="60"
+            required
+          />
+          <p class="hint">At this limit, OrderStash takes a five-minute break and continues automatically. Amazon blocks and sign-in challenges require your review.</p>
+          <label class="check"
+            ><input type="checkbox" id="auto-sidebar" checked /><span
+              >Show the sidebar on order-history pages</span
+            ></label
+          ><button class="primary" type="submit">Save preferences</button>
+        </form>
+        <div class="clear-area">
+          <button id="clear-data" class="danger">
+            Clear saved records and export history
+          </button>
+          <p class="hint">
+            Downloaded files stay on disk. Cleared records will count as
+            unexported again.
+          </p>
+        </div>
+      </section>
+      <section id="page-help" hidden>
+        <h1>Using OrderStash</h1>
+        <ol>
+          <li>
+            Open Amazon’s <strong>Your Orders</strong> page. Available years and
+            the order count come from that page.
+          </li>
+          <li>
+            Choose the current page or a year.
+            <strong>Save invoice PDFs</strong> is the main action; CSV is
+            available alongside it.
+          </li>
+          <li>
+            Keep Chrome open. You can close the controls while exporting;
+            reopen them to see progress, pause or resume.
+          </li>
+        </ol>
+        <p>
+          Open <strong>Orders</strong> to search saved summaries and check each
+          order’s PDF and CSV export status. These formats are tracked separately.
+          Exported badges show completed downloads, even if you later move or
+          delete the files.
+        </p>
+        <p>
+          Summary collection reads history pages only. Details, product pages
+          and tracking pages are visited only if you select those options.
+          Invoice pages are visited only for PDF export.
+        </p>
+        <p>
+          OrderStash takes a five-minute break at its visit budget, then continues
+          automatically. Pause cancels that continuation. Amazon blocks and
+          sign-in challenges stop for your review. Resume finds an open Orders
+          tab without a separate refresh step.
+        </p>
+        <p>
+          OrderStash saves your own order records locally. Amazon's terms
+          distinguish third-party use of account information and separately
+          restrict automated extraction tools. Personal recordkeeping does not
+          establish permission for every automated method. Sign-in, challenges
+          and rate limits stop automated visits.
+        </p>
+        <a
+          href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GLSBYFE9MGKKQXXM"
+          target="_blank"
+          rel="noreferrer"
+          >Amazon’s Conditions of Use</a
+        >
+        <p>
+          Orders and export history stay in this Chrome profile. No account,
+          subscription, telemetry or OrderStash server. Downloads are saved
+          under <strong>Downloads/OrderStash</strong>.
+        </p>
+        <details class="options">
+          <summary>Why does Chrome say “debugging this browser”?</summary>
+          <p>Native PDF printing uses Chrome’s debugger API. OrderStash attaches it to its dedicated invoice tab, and detaches when the export finishes or pauses. Opening a different tab does not move that attachment.</p>
+          <p>The debugger permission itself is powerful and is not restricted to Amazon by Chrome. OrderStash’s code limits its use to invoice printing; its normal page scripts run only on the supported Amazon sites.</p>
+        </details>
+        <p>
+          Amazon layouts vary. Check important records against Amazon. Some
+          seller PDF invoices or multiple invoices for one order may need manual
+          export.
+        </p>
+        <p>
+          <a href="LICENSE" target="_blank">License</a> ·
+          <a href="NOTICE" target="_blank">Attribution</a> ·
+          <a href="PRIVACY.md" target="_blank">Privacy</a>
+        </p>
+      </section>
+    </main>
+    <footer id="job-panel" hidden>
+      <strong id="job-title"></strong>
+      <p id="job-message"></p>
+      <div>
+        <span id="job-progress"></span
+        ><button id="pause-job" class="secondary">Pause</button
+        ><button id="resume-job" class="secondary" hidden>Resume</button>
+      </div>
+    </footer>
+    <div class="version" id="version">OrderStash</div>
+  </body>
+</html>

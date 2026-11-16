@@ -1,0 +1,18 @@
+﻿OrderStash
+Copyright 2026 OrderStash contributors.
+Distributed under the Apache License, Version 2.0. See LICENSE.
+
+Third-party acknowledgment and retained provenance:
+Azad (Amazon Order History Reporter), Philip Mulcahy and contributors,
+copyright 2018-2026.
+https://github.com/philipmulcahy/azad
+Its Apache-2.0 attribution is retained for prior work used during development.
+
+OrderStash modifications and new work, 2026:
+- Rewritten extension runtime, interface, local library and export tracking.
+- Native DOM extraction, summary-first collection and optional enrichment.
+- Invoice PDF export, randomized pacing, checkpoints and recovery.
+- Independent branding, assets, build tooling, tests and documentation.
+
+Amazon and related marks belong to their respective owners. OrderStash is
+independent software and is not affiliated with or endorsed by Amazon.

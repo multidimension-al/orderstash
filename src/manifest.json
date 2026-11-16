@@ -1,0 +1,107 @@
+{
+  "manifest_version": 3,
+  "name": "OrderStash - Invoice PDFs & Order Export for Amazon",
+  "minimum_chrome_version": "120",
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self' data:; frame-src 'self'; base-uri 'none'"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "debugger",
+    "downloads",
+    "scripting",
+    "webRequest",
+    "offscreen",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "https://www.amazon.ae/*",
+    "https://www.amazon.ca/*",
+    "https://www.amazon.co.jp/*",
+    "https://www.amazon.co.uk/*",
+    "https://www.amazon.com.au/*",
+    "https://www.amazon.com.be/*",
+    "https://www.amazon.com.mx/*",
+    "https://www.amazon.com/*",
+    "https://www.amazon.de/*",
+    "https://www.amazon.es/*",
+    "https://www.amazon.fr/*",
+    "https://www.amazon.in/*",
+    "https://www.amazon.ie/*",
+    "https://www.amazon.it/*",
+    "https://www.amazon.nl/*",
+    "https://www.amazon.sa/*"
+  ],
+  "action": {
+    "default_title": "OrderStash - Export Amazon invoices",
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "description": "Free invoice PDFs and CSV exports beside Amazon. Read history pages first; get extra details only when requested.",
+  "version": "0.1.0",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "panel.html?docked=1"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.amazon.ae/*",
+        "https://www.amazon.ca/*",
+        "https://www.amazon.co.jp/*",
+        "https://www.amazon.co.uk/*",
+        "https://www.amazon.com.au/*",
+        "https://www.amazon.com.be/*",
+        "https://www.amazon.com.mx/*",
+        "https://www.amazon.com/*",
+        "https://www.amazon.de/*",
+        "https://www.amazon.es/*",
+        "https://www.amazon.fr/*",
+        "https://www.amazon.in/*",
+        "https://www.amazon.ie/*",
+        "https://www.amazon.it/*",
+        "https://www.amazon.nl/*",
+        "https://www.amazon.sa/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["panel.html", "panel.js", "panel.css", "orderstash-logo-light.png"],
+      "matches": [
+        "https://www.amazon.ae/*",
+        "https://www.amazon.ca/*",
+        "https://www.amazon.co.jp/*",
+        "https://www.amazon.co.uk/*",
+        "https://www.amazon.com.au/*",
+        "https://www.amazon.com.be/*",
+        "https://www.amazon.com.mx/*",
+        "https://www.amazon.com/*",
+        "https://www.amazon.de/*",
+        "https://www.amazon.es/*",
+        "https://www.amazon.fr/*",
+        "https://www.amazon.in/*",
+        "https://www.amazon.ie/*",
+        "https://www.amazon.it/*",
+        "https://www.amazon.nl/*",
+        "https://www.amazon.sa/*"
+      ]
+    }
+  ]
+}
