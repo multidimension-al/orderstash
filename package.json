@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "test": "jest --runInBand",
     "test:browser": "node scripts/test-browser.cjs",
+    "assets:store": "node scripts/store-assets.cjs",
     "audit:publication": "node scripts/audit-publication.cjs",
+    "audit:store": "node scripts/audit-store.cjs",
     "package": "node scripts/package.cjs"
   },
   "devDependencies": {

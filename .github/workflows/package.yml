@@ -51,6 +51,10 @@ jobs:
               assert 'LICENSE' in expected and 'NOTICE' in expected
           print('Verified ' + archives[0].name + ': manifest at root, audited files and attribution intact.')
           PY
+      - name: Bundle store listing copy and images
+        run: |
+          npm run audit:store
+          zip -qr artifacts/store-listing-assets.zip store
       - name: Upload Chrome Web Store ZIP
         id: upload
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -59,14 +63,25 @@ jobs:
           archive: false
           if-no-files-found: error
           retention-days: 30
+      - name: Upload store listing assets
+        id: store-upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          path: artifacts/store-listing-assets.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
       - name: Add download link
         env:
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          STORE_ASSET_URL: ${{ steps.store-upload.outputs.artifact-url }}
         run: |
           {
             echo '### Chrome Web Store ZIP'
             echo
             echo "[Download extension ZIP]($ARTIFACT_URL)"
+            echo
+            echo "[Download store description, icon, screenshots and promo tiles]($STORE_ASSET_URL)"
             echo
             echo 'Upload this ZIP directly to the Chrome Web Store Developer Dashboard.'
             echo 'This workflow creates a downloadable build; store submission is a separate step.'

@@ -22,3 +22,4 @@ jobs:
       - run: npm run build
       - run: npm test -- --no-coverage
       - run: npm run audit:publication
+      - run: npm run audit:store

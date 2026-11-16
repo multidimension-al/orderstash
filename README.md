@@ -55,6 +55,11 @@ runs unit tests, audits the public files and verifies the ZIP contents. Store
 submission is a separate step. For local packaging, run `npm run build` followed
 by `npm run package`; the ZIP is written to `artifacts/`.
 
+The manual run also provides `store-listing-assets.zip` with ready-to-upload
+images and description text. See the
+[store listing files](https://github.com/multidimension-al/orderstash/tree/main/store)
+for the icon, five screenshots, promo tiles and recommended listing fields.
+
 ## Start exporting
 
 1. Open **Your Orders** on Amazon, then click OrderStash's toolbar icon.

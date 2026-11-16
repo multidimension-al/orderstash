@@ -34,6 +34,8 @@ Initialize a Git repository if you also want to run the publication audit.
 | `npm run audit:publication` | Check all Git-eligible files, staged contents, documentation, versions and the generated build. Requires a Git checkout. |
 | `npm run test:browser` | Exercise real Chrome APIs against local HTTPS fixtures. |
 | `npm run package` | Audit the build and create an extension ZIP under `artifacts/`. |
+| `npm run assets:store` | Render listing screenshots and promo tiles from the real extension with synthetic records. Uses the browser-test executables. |
+| `npm run audit:store` | Check store-image dimensions, PNG color format, icon identity and listing text lengths. |
 
 ## Manual GitHub packaging
 
@@ -52,6 +54,12 @@ run summary link. The original ZIP is uploaded as a single file and is ready for
 the Chrome Web Store Developer Dashboard. Sign in to GitHub to download it.
 Artifacts expire after 30 days; rerun the workflow for a fresh build. The workflow
 does not change the version, create a GitHub Release or submit to the Web Store.
+
+The same manual run also provides `store-listing-assets.zip`, containing finished
+listing copy, the icon, five screenshots and both promo tile sizes from `store/`.
+Extract that download to select individual store images. The extension ZIP is
+uploaded separately. Store artwork is public source material, kept outside the
+compiled extension.
 
 ## Browser tests
 

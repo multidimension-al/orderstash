@@ -1,0 +1,32 @@
+Your Amazon invoices, finally easy to keep.
+
+Whether you are organizing expenses, preparing a reimbursement, or keeping your own purchase records, OrderStash helps turn your Amazon order history into files you can use.
+
+Save invoice PDFs, export orders to CSV, and find past purchases in a searchable local library, right beside your Amazon orders. Invoice PDFs are free. There is no separate OrderStash account or subscription.
+
+SAVE YOUR INVOICE PDFs
+Choose the current page or an available year and save Amazon invoice pages as PDFs. Pick Letter or A4 paper and optionally add an OrderStash header with the order number, site, and export time.
+
+EXPORT RECORDS YOU CAN WORK WITH
+Export Orders, Items, Shipments, or Payments CSV files for spreadsheets and recordkeeping. History summaries are used first. Extra order details, product categories, and tracking information are collected only when you request them.
+
+FIND WHAT YOU HAVE ALREADY SAVED
+Visible order summaries join a local library as you browse. Search by order number, item, or date. See PDF and CSV completion separately, filter invoices still to export, and skip completed downloads.
+
+PICK UP WHERE YOU LEFT OFF
+Pause and resume with saved progress. Review recent exports in History. OrderStash spaces out automated visits and takes budget breaks; Amazon sign-in prompts, verification challenges, and access blocks stop work for your review.
+
+KEEP YOUR RECORDS LOCAL
+Saved orders stay in your Chrome profile. OrderStash does not upload your orders, run analytics, sell your data, or contact an OrderStash server. Amazon pages and exports use your existing signed-in browser session. Separate Chrome profiles are needed to keep different Amazon logins' libraries apart.
+
+GET STARTED
+1. Open Amazon's Your Orders page in Chrome.
+2. Open OrderStash and choose a page or year.
+3. Save invoice PDFs or export a CSV.
+
+Keep Chrome open while exporting. The controls can be docked beside Amazon or detached into a window.
+
+GOOD TO KNOW
+PDFs are printed from Amazon invoice webpages. Seller-supplied PDF files and multiple invoices for one order may require manual download. Available fields and layouts vary; compare important records with Amazon. Chrome displays a debugging notice during native PDF printing.
+
+OrderStash is independent software and is not affiliated with or endorsed by Amazon.
